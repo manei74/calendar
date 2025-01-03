@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Favorite fruit start</title>
+    <style>
+      body {
+        /* font: 1em sans-serif;
+        width: 200px;
+        padding: 0;
+        margin: 0 auto; */
+      }
+    </style>
+  </head>
+
+  <body>
+    <script>
+      const days = [
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+      ];
+      const firstDays = [
+        "Saturday",
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+      ];
+      const months = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+      ];
+
+      const body = document.querySelector("body");
+
+      const regularYearCodes = [1, 4, 4, 0, 2, 5, 0, 3, 6, 1, 4, 6];
+      const leapYearCodes = [0, 3, 4, 0, 2, 5, 0, 3, 6, 1, 4, 6];
+
+      const regularYearDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+      const leapYearDays = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+      const promptYear = +prompt("Choose year", 25);
+      const promptMonth = +prompt("Choose month", 1);
+
+      function countYearCode(year) {
+        return (6 + year + Math.floor(year / 4)) % 7;
+      }
+
+      function countDayWeek(year, month) {
+        const yearCode = countYearCode(year);
+        let monthCode = 9;
+        if (year % 4 === 0) monthCode = leapYearCodes[month - 1];
+        else monthCode = regularYearCodes[month - 1];
+        return (1 + monthCode + yearCode) % 7;
+      }
+
+      function createCalendar(elem, year, month) {
+        const table = document.createElement("table");
+        const tableBody = document.createElement("tbody");
+        const div = document.createElement("div");
+        const divContent = document.createTextNode(
+          `20${year} ${months[month - 1]}`
+        );
+        let cellText = "";
+        let count = 1;
+        let firstDay = days.indexOf(firstDays[countDayWeek(year, month)]);
+        let start = false;
+        let endMonth = 0;
+
+        if (year % 4 === 0) endMonth = leapYearDays[month - 1];
+        else endMonth = regularYearDays[month - 1];
+
+        for (let i = 1; i < 7; i++) {
+          const row = document.createElement("tr");
+
+          for (let j = 0; j < 7; j++) {
+            const cell = document.createElement("td");
+            if (i === 1) {
+              cellText = document.createTextNode(days[j]);
+            } else if (i === 2 && j === firstDay) {
+              cellText = document.createTextNode(count);
+              start = true;
+            } else if (i === 2 && start) {
+              count += 1;
+              cellText = document.createTextNode(count);
+            } else if (i === 2) {
+              cellText = document.createTextNode("");
+            } else if (count >= endMonth) break;
+            else {
+              count += 1;
+              cellText = document.createTextNode(count);
+            }
+
+            cell.append(cellText);
+            row.append(cell);
+          }
+          tableBody.append(row);
+        }
+        table.append(tableBody);
+        div.append(divContent);
+        div.style.textAlign = "center";
+        div.style.fontSize = "36px";
+        table.style.textAlign = "center";
+        table.style.margin = " 0 auto";
+        table.style.textAlign = "center";
+        elem.append(table);
+        elem.before(div);
+        table.setAttribute("border", "2");
+      }
+
+      createCalendar(body, +promptYear, +promptMonth);
+    </script>
+  </body>
+</html>
